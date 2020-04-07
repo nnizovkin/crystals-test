@@ -47,6 +47,11 @@ public class PriceMergeService {
                 res.addAll(buildPrices(e.getKey(), e.getValue()));
             }
         }
+
+        for (var e : newPricesMap.entrySet()) {
+            res.addAll(buildPrices(e.getKey(), e.getValue()));
+        }
+
         return res;
     }
 
