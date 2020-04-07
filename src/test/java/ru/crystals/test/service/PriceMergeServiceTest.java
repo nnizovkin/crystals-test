@@ -105,7 +105,7 @@ public class PriceMergeServiceTest {
     }
 
     @Test
-    public void testWithDiffProducts() {
+    public void diffProducts_splitAndParseNewProducts() {
         PriceMergeService service = new PriceMergeService();
         Assert.assertEquals(List.of(buildPrice("1234", 1, 2, 1, 6, 1), buildPrice("1234", 2, 1, 4, 5, 1),
                 buildPrice("1234", 2, 1, 5, 7, 0), buildPrice("6234", 1, 2, 0, 2, 1),
@@ -114,6 +114,29 @@ public class PriceMergeServiceTest {
                         buildPrice("6234", 1, 2, 0, 5, 1)),
                         List.of(buildPrice("1234", 1, 2, 4, 6, 1), buildPrice("1234", 2, 1, 5, 7, 0),
                                 buildPrice("6234", 1, 2, 2, 3, 0))));
+    }
+
+    @Test
+    public void newProducts_resultHasNewProducts() {
+        PriceMergeService service = new PriceMergeService();
+        Assert.assertEquals(List.of(buildPrice("1234", 1, 2, 1, 6, 1), buildPrice("1234", 2, 1, 4, 5, 1),
+                buildPrice("1234", 2, 1, 5, 7, 0), buildPrice("6234", 1, 2, 0, 2, 1),
+                buildPrice("6234", 1, 2, 2, 3, 0), buildPrice("6234", 1, 2, 3, 5, 1),
+                buildPrice("5234", 1, 2, 2, 3, 0)),
+                service.mergePrices(List.of(buildPrice("1234", 1, 2, 1, 5, 1), buildPrice("1234", 2, 1, 4, 6, 1),
+                        buildPrice("6234", 1, 2, 0, 5, 1)),
+                        List.of(buildPrice("1234", 1, 2, 4, 6, 1), buildPrice("1234", 2, 1, 5, 7, 0),
+                                buildPrice("6234", 1, 2, 2, 3, 0), buildPrice("5234", 1, 2, 2, 3, 0))));
+    }
+
+    @Test
+    public void twoPriceInTailWithoutIntersection_twoPriCesInTailInResult() {
+        PriceMergeService service = new PriceMergeService();
+        Assert.assertEquals(List.of(buildPrice("1234", 1, 2, 1, 6, 1), buildPrice("1234", 1, 2, 7, 8, 1),
+                buildPrice("1234", 1, 2, 9, 10, 1)),
+                service.mergePrices(List.of(buildPrice("1234", 1, 2, 1, 5, 1),
+                        buildPrice("1234", 1, 2, 7, 8, 1), buildPrice("1234", 1, 2, 9, 10, 1)),
+                        List.of(buildPrice("1234", 1, 2, 4, 6, 1))));
     }
 
     private Price buildPrice(long begin, long end, long value) {
